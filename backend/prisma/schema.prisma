@@ -8,9 +8,32 @@ generator client {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id        Int      @id @default(autoincrement())
+  name      String   @default("") @map("first_name")
+  phone     String?
+  email     String   @unique
+  password  String
+  avatar    String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  tokens    Token[]
 
   @@map("users")
+}
+
+model Token {
+  id     String @id @default(uuid())
+  token  String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@map("tokens")
+}
+
+enum Role {
+  ADMIN
+  USER
+  ELECTRICAL_ENGINEER
+  ENERGY_ENGINEER
 }
