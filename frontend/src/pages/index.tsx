@@ -1,3 +1,10 @@
+import { LoginForm } from "@/feauters/auth/login"
+import { RegisterForm } from "@/feauters/auth/register"
+
 export default function IndexPage() {
-  return <div>Index page</div>
+  return (
+    <div>
+      <LoginForm /> <RegisterForm />
+    </div>
+  )
 }
