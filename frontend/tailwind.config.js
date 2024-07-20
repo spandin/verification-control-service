@@ -48,7 +48,7 @@ module.exports = {
             foreground: "white",
             primary: {
               DEFAULT: "#006fee",
-              foreground: "black",
+              foreground: "white",
             },
             focus: "#006fee",
             divider: "black",
