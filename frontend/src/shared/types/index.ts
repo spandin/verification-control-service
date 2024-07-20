@@ -1,0 +1,6 @@
+export enum Role {
+  ADMIN,
+  EXPERT,
+  ELECTRICAL_ENGINER,
+  ENERGY_ENGINER,
+}
