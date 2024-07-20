@@ -40,6 +40,9 @@ export const useAuth = () => {
         setToken(response.data.token)
         setIsAuth(true)
         setLoading(false)
+        if (response.data.message === "User logged in successfully.") {
+          handleSuccess("Вы вошли в аккаунт.")
+        }
       },
 
       (err: any) => {
