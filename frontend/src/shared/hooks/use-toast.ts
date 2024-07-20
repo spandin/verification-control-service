@@ -4,7 +4,7 @@ import { ToastOptions, toast } from "react-toastify"
 export const useToasts = () => {
   const settingsToast: ToastOptions = {
     position: "top-center",
-    autoClose: 1500,
+    autoClose: 2500,
     hideProgressBar: false,
     closeOnClick: true,
   }
@@ -20,40 +20,24 @@ export const useToasts = () => {
     toast.error(`${title} - ${error}`, settingsToast)
   }
 
-  const handleSuccess = (title: string, description: string) => {
-    toast.success(`${title} - ${description}`, settingsToast)
+  const handleSuccess = (description: string) => {
+    toast.success(description, settingsToast)
   }
 
-  const handleInfo = (title: string, description: string) => {
-    toast.info(`${title} - ${description}`, settingsToast)
+  const handleInfo = (description: string) => {
+    toast.info(description, settingsToast)
   }
 
-  const handleWarning = (title: string, description: string) => {
-    toast.warning(`${title} - ${description}`, settingsToast)
+  const handleWarning = (description: string) => {
+    toast.warning(description, settingsToast)
   }
 
   const handlePromise = <T>(
     promise: Promise<T>,
-    messages: {
-      st?: string
-      sd?: string
-      et?: string
-      ed?: string
-      lt?: string
-      ld?: string
-    },
     onSuccess: (response?: T) => void,
     onError: (response?: T) => void,
   ) => {
-    toast.promise(
-      promise,
-      {
-        success: `${messages.st || "Успешно"} - ${messages.sd || "Ваши данные отправлены на сервер."}`,
-        error: `${messages.et || "Ошибка"} - ${messages.ed || ""}`,
-        pending: `${messages.lt || "Подождите"} - ${messages.ld || "Идет отправка запроса."}`,
-      },
-      settingsToast,
-    )
+    toast.promise(promise, {}, settingsToast)
 
     promise
       .then((response) => {
