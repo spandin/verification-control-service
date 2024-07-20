@@ -4,8 +4,10 @@ import { EyeOff, Eye } from "lucide-react"
 import { useState } from "react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import { useAuth } from "@/shared/hooks/use-auth"
 
 export const LoginForm = () => {
+  const { login } = useAuth()
   const [isVisible, setIsVisible] = useState(false)
 
   const formik = useFormik({
@@ -13,6 +15,7 @@ export const LoginForm = () => {
       email: "",
       password: "",
     },
+
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Введите корректный email адрес.")
@@ -24,22 +27,9 @@ export const LoginForm = () => {
         .min(6, "Минимальная длинна пароля - 6 символов.")
         .max(32, "Максимальная длинна пароля - 32 символа."),
     }),
-    onSubmit: async (values) => {
-      // Отправка данных на сервер для входа
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      })
 
-      if (response.ok) {
-        const data = await response.json()
-        console.log("Logged in:", data)
-      } else {
-        console.error("Failed to login")
-      }
+    onSubmit: async (values) => {
+      login(values.email, values.password)
     },
   })
 
@@ -47,16 +37,24 @@ export const LoginForm = () => {
     <div>
       <form onSubmit={formik.handleSubmit} noValidate>
         <Input
-          type="email"
+          className="max-w-xs"
           variant="bordered"
+          type="email"
+          name="email"
           label="Email"
           placeholder="you@mail.com"
-          className="max-w-xs"
+          onChange={formik.handleChange}
+          value={formik.values.email}
         />
         <Input
-          label="Пороль"
+          className="max-w-xs"
           variant="bordered"
+          type={isVisible ? "text" : "password"}
+          name="password"
+          label="Пороль"
           placeholder="Пороль"
+          onChange={formik.handleChange}
+          value={formik.values.password}
           endContent={
             <button
               className="focus:outline-none"
@@ -71,8 +69,6 @@ export const LoginForm = () => {
               )}
             </button>
           }
-          type={isVisible ? "text" : "password"}
-          className="max-w-xs"
         />
 
         <Button type="submit" color="primary">
