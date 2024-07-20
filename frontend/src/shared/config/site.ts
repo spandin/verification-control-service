@@ -1,8 +1,9 @@
-export type SiteConfig = typeof siteConfig;
+export type SiteConfig = typeof SITE_CONFIG
 
-export const siteConfig = {
+export const SITE_CONFIG = {
   name: "VCS",
   description: "Система контроля поверок",
+  BASE_URL: "https://experttelescope-9sh5.onrender.com",
   navItems: [
     {
       label: "Home",
@@ -18,4 +19,4 @@ export const siteConfig = {
   links: {
     example: "url",
   },
-};
+}
