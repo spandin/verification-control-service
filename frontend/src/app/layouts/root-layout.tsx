@@ -1,16 +1,12 @@
-import { LoginForm } from "@/feauters/auth/login"
 import { useAuth } from "@/shared/hooks/use-auth"
-import { Navbar } from "@/widgets/navbar"
+import LoginWidget from "@/widgets/login-widget"
+import Navbar from "@/widgets/navbar"
 
 export const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuth } = useAuth()
 
   if (!isAuth) {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center px-6">
-        <LoginForm />
-      </div>
-    )
+    return <LoginWidget />
   }
 
   return (
