@@ -2,7 +2,7 @@ export type SiteConfig = typeof SITE_CONFIG
 
 export const SITE_CONFIG = {
   name: "VCS",
-  description: "Система контроля поверок",
+  description: "Verification Control Service",
   BASE_URL: "http://localhost:3000/",
   navItems: [
     {
