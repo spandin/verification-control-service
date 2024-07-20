@@ -40,10 +40,12 @@ export const LoginForm = () => {
           <div className="mb-4 flex flex-col items-start justify-start px-1">
             <div className="flex flex-row items-center justify-start gap-3">
               <div className="h-4 w-4 rotate-45 bg-warning" />
-              <h1 className="text-2xl font-semibold text-slate-800">{SITE_CONFIG.description}</h1>
+              <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+                {SITE_CONFIG.description}
+              </h1>
             </div>
 
-            <h3 className="text-md font-semibold text-slate-500">
+            <h3 className="text-md font-semibold text-default-700">
               система контроля поверки ГУ "ЦОДБО"
             </h3>
           </div>
@@ -84,11 +86,7 @@ export const LoginForm = () => {
             placement="bottom"
             classNames={{
               base: ["before:bg-default-200"],
-              content: [
-                "py-3 px-4 border border-default-200 max-w-sm",
-                "bg-gradient-to-br from-white to-default-300",
-                "dark:from-default-100 dark:to-default-50",
-              ],
+              content: ["py-3 px-4 max-w-sm"],
             }}
           >
             <PopoverTrigger>
