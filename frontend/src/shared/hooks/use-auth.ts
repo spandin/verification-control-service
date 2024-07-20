@@ -5,7 +5,8 @@ import { Role } from "../types"
 import { useAuthStore } from "../store/auth-store"
 
 export const useAuth = () => {
-  const { handleError, handleWarning, handlePromise } = useToasts()
+  const { handleError, handleWarning, handlePromise, handleSuccess } =
+    useToasts()
   const { isAuth, isLoading, setIsAuth, setLoading, setToken } = useAuthStore(
     useShallow((state) => ({
       isAuth: state.isAuth,
@@ -26,42 +27,6 @@ export const useAuth = () => {
     }
   }
 
-  const register = async (
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    role: Role,
-  ) => {
-    setLoading(true)
-
-    handlePromise(
-      axiosInstance.post("/auth/register", {
-        firstName,
-        lastName,
-        email,
-        password,
-        role,
-      }),
-      {
-        st: "Добро пожаловать",
-        sd: "Регистрация прошла успешно.",
-      },
-
-      (response: any) => {
-        setToken(response.data.token)
-        setLoading(false)
-      },
-
-      (err: any) => {
-        if (err.response.data.message === "User already exists.") {
-          handleWarning("Извините", "Данный пользователь уже зарегистрирован.")
-        }
-        setLoading(false)
-      },
-    )
-  }
-
   const login = async (email: string, password: string) => {
     setLoading(true)
 
@@ -70,10 +35,6 @@ export const useAuth = () => {
         email,
         password,
       }),
-      {
-        st: "Добро пожаловать",
-        sd: "Авторизация прошла успешно.",
-      },
 
       (response: any) => {
         setToken(response.data.token)
@@ -83,12 +44,41 @@ export const useAuth = () => {
 
       (err: any) => {
         if (err.response.data.message === "User not found.") {
-          handleWarning(
-            "Извините",
-            "Похоже данного пользователя не существует.",
-          )
+          handleWarning("Пользователь не найден.")
         }
         setLoading(false)
+      },
+    )
+  }
+
+  const register = async (
+    phone: string | null,
+    name: string,
+    email: string,
+    password: string,
+    role: Role,
+  ) => {
+    handlePromise(
+      axiosInstance.post("/auth/register", {
+        phone,
+        name,
+        email,
+        password,
+        role,
+      }),
+
+      (response: any) => {
+        if (response.data.message === "User registered successfully.") {
+          handleSuccess(
+            "Новый пользователь успешно зарегистрирован. Не забудьте отправить данные новому сотруднику.",
+          )
+        }
+      },
+
+      (err: any) => {
+        if (err.response.data.message === "User already exists.") {
+          handleWarning("Данный пользователь уже зарегистрирован.")
+        }
       },
     )
   }
@@ -96,13 +86,10 @@ export const useAuth = () => {
   const logout = async () => {
     handlePromise(
       axiosInstance.post("/auth/logout"),
-      {
-        st: "Прощайте",
-        sd: "Вы вышли из аккаунта.",
-      },
 
       () => {
         setToken(null)
+        setIsAuth(false)
       },
 
       (err) => {
