@@ -18,11 +18,15 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('VSC')
-    .setDescription('API Documentation')
+    .setDescription(
+      'API Documentation. You can download the JSON document <a href="/api/swagger-spec" target="_blank">here</a>. \n\n Or import it by URL http://localhost:3000/api/swagger-spec',
+    )
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .setVersion('1.0')
     .build()
+
   const document = SwaggerModule.createDocument(app, config)
+
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'VCS API',
   })
