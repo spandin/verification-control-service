@@ -37,7 +37,7 @@ export const useToasts = () => {
     onSuccess: (response?: T) => void,
     onError: (response?: T) => void,
   ) => {
-    toast.promise(promise, {}, settingsToast)
+    toast.promise(promise, { pending: "Подождите" }, settingsToast)
 
     promise
       .then((response) => {
