@@ -24,7 +24,7 @@ export const useAuthStore = create<StoreState>()(
         setLoading: (isLoading) => set({ isLoading }),
       }),
       {
-        name: "auth-store",
+        name: "auth_store",
       },
     ),
   ),
