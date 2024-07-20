@@ -6,7 +6,7 @@ export class RegisterDto {
   @ApiProperty({ description: 'User phone' })
   @IsOptional()
   @MinLength(5)
-  @MaxLength(12)
+  @MaxLength(13)
   phone?: string
 
   @ApiProperty({ description: 'User email address' })
