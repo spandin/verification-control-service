@@ -41,7 +41,7 @@ export class AuthController {
       const result = await this.authService.register(registerDto)
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'User registered successfully',
+        message: 'User registered successfully.',
         token: result.token,
       }
     } catch (error) {
