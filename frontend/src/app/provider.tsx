@@ -1,3 +1,5 @@
+import "react-toastify/dist/ReactToastify.css"
+
 import { NextUIProvider } from "@nextui-org/system"
 import { useNavigate } from "react-router-dom"
 import { RootLayout } from "./layouts/root-layout"
