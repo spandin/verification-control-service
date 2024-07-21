@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { DeviceCategory, DeviceType } from '@prisma/client'
-import { IsEnum, IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator'
+import { IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator'
 
 export class CreateDeviceDto {
   @ApiProperty({ example: 'Lorem Ipsum', description: 'The name of the device', type: String })
@@ -20,24 +19,18 @@ export class CreateDeviceDto {
   number: string
 
   @ApiProperty({
-    example: DeviceType[0],
     description: 'The type of the device',
-    enum: DeviceType,
     type: String,
   })
-  @IsEnum(DeviceType)
   @IsNotEmpty()
-  type: DeviceType
+  type: string
 
   @ApiProperty({
-    example: DeviceCategory[0],
     description: 'The type of the device',
-    enum: DeviceCategory,
     type: String,
   })
-  @IsEnum(DeviceCategory)
   @IsNotEmpty()
-  category: DeviceCategory
+  category: string
 
   @ApiProperty({
     example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -46,22 +39,6 @@ export class CreateDeviceDto {
   })
   @IsOptional()
   description?: string
-
-  @ApiProperty({
-    example: '2023-05-19T14:48:00.000Z',
-    description: 'The date and time when the device was created',
-    type: Date,
-  })
-  @IsNotEmpty()
-  createdAt: Date
-
-  @ApiProperty({
-    example: '2023-05-19T14:48:00.000Z',
-    description: 'The date and time when the device was updated',
-    type: Date,
-  })
-  @IsNotEmpty()
-  updatedAt: Date
 
   @ApiProperty({
     example: '2023-05-19T14:48:00.000Z',

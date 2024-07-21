@@ -8,7 +8,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateDeviceDto } from './dto/create.dto'
 import { RequsterTypes } from 'types'
-import { DeviceType, DeviceCategory, Device } from '@prisma/client'
+import { Device } from '@prisma/client'
 import { UpdateDeviceDto } from './dto/update.dto'
 
 @Injectable()
@@ -19,7 +19,7 @@ export class DevicesService {
   async createDevice(
     createDeviceDto: CreateDeviceDto,
     requester: RequsterTypes,
-  ): Promise<Omit<Device, 'userId' | 'updatedAt'>> {
+  ): Promise<Omit<Device, 'userId' | 'updatedAt' | 'typeId' | 'categoryId'>> {
     const { name, number, type, category, description, from, to } = createDeviceDto
 
     if (!name || name.length < 6 || name.length > 32) {
@@ -28,12 +28,19 @@ export class DevicesService {
     if (!number || number.length < 5 || number.length > 24) {
       throw new BadRequestException('Invalid number. Must be between 5 and 24 characters.')
     }
-    if (!Object.values(DeviceType).includes(type)) {
+
+    const deviceType = await this.prisma.deviceType.findUnique({ where: { name: type } })
+    if (!deviceType) {
       throw new BadRequestException('Invalid type. Must be a valid DeviceType.')
     }
-    if (!Object.values(DeviceCategory).includes(category)) {
+
+    const deviceCategory = await this.prisma.deviceCategory.findUnique({
+      where: { name: category },
+    })
+    if (!deviceCategory) {
       throw new BadRequestException('Invalid category. Must be a valid DeviceCategory.')
     }
+
     if (!from || isNaN(new Date(from).getTime())) {
       throw new BadRequestException('Invalid from date.')
     }
@@ -46,11 +53,15 @@ export class DevicesService {
         data: {
           name,
           number,
-          type,
-          category,
           description,
           from,
           to,
+          type: {
+            connect: { id: deviceType.id },
+          },
+          category: {
+            connect: { id: deviceCategory.id },
+          },
           user: {
             connect: { id: requester.id },
           },
@@ -59,8 +70,8 @@ export class DevicesService {
           id: true,
           name: true,
           number: true,
-          type: true,
-          category: true,
+          type: { select: { id: true, name: true } },
+          category: { select: { id: true, name: true } },
           description: true,
           createdAt: true,
           from: true,
@@ -79,7 +90,7 @@ export class DevicesService {
     id: number,
     updateDeviceDto: UpdateDeviceDto,
     requester: RequsterTypes,
-  ): Promise<Omit<Device, 'userId' | 'createdAt'>> {
+  ): Promise<Omit<Device, 'userId' | 'createdAt' | 'typeId' | 'categoryId'>> {
     const device = await this.prisma.device.findUnique({
       where: { id },
       include: { user: true },
@@ -89,24 +100,51 @@ export class DevicesService {
       throw new NotFoundException(`Device with ID ${id} not found.`)
     }
 
-    if (requester.role !== 'ADMIN' && device.userId !== requester.id) {
+    if (requester.role !== 'администратор' && device.userId !== requester.id) {
       throw new ForbiddenException(
         'Access denied. Only the creator user of this device or an admin can update it.',
       )
     }
 
+    const updateData: any = {}
+
+    if (updateDeviceDto.type) {
+      const deviceType = await this.prisma.deviceType.findUnique({
+        where: { name: updateDeviceDto.type },
+      })
+      if (!deviceType) {
+        throw new BadRequestException('Invalid type. Must be a valid DeviceType.')
+      }
+      updateData.type = { connect: { id: deviceType.id } }
+    }
+
+    if (updateDeviceDto.category) {
+      const deviceCategory = await this.prisma.deviceCategory.findUnique({
+        where: { name: updateDeviceDto.category },
+      })
+      if (!deviceCategory) {
+        throw new BadRequestException('Invalid category. Must be a valid DeviceCategory.')
+      }
+      updateData.category = { connect: { id: deviceCategory.id } }
+    }
+
+    if (updateDeviceDto.name) updateData.name = updateDeviceDto.name
+    if (updateDeviceDto.number) updateData.number = updateDeviceDto.number
+    if (updateDeviceDto.description !== undefined)
+      updateData.description = updateDeviceDto.description
+    if (updateDeviceDto.from) updateData.from = new Date(updateDeviceDto.from)
+    if (updateDeviceDto.to) updateData.to = new Date(updateDeviceDto.to)
+
     try {
       return await this.prisma.device.update({
         where: { id },
-        data: {
-          ...updateDeviceDto,
-        },
+        data: updateData,
         select: {
           id: true,
           name: true,
           number: true,
-          type: true,
-          category: true,
+          type: { select: { id: true, name: true } },
+          category: { select: { id: true, name: true } },
           description: true,
           updatedAt: true,
           from: true,
@@ -130,7 +168,7 @@ export class DevicesService {
       throw new NotFoundException(`Device with ID ${id} not found.`)
     }
 
-    if (requester.role !== 'ADMIN' && device.userId !== requester.id) {
+    if (requester.role !== 'администратор' && device.userId !== requester.id) {
       throw new ForbiddenException(
         'Access denied. Only the creator user of this device or an admin can delete it.',
       )
@@ -147,15 +185,15 @@ export class DevicesService {
   }
 
   // Get by id device service
-  async getDeviceById(id: number): Promise<Omit<Device, 'userId'>> {
+  async getDeviceById(id: number): Promise<Omit<Device, 'userId' | 'typeId' | 'categoryId'>> {
     const device = await this.prisma.device.findUnique({
       where: { id },
       select: {
         id: true,
         name: true,
         number: true,
-        type: true,
-        category: true,
+        type: { select: { id: true, name: true } },
+        category: { select: { id: true, name: true } },
         description: true,
         createdAt: true,
         updatedAt: true,
@@ -173,18 +211,17 @@ export class DevicesService {
   }
 
   // Get all devices service
-  async getAllDevices(skip: number = 0, take: number = 10): Promise<Omit<Device, 'userId'>[]> {
+  async getAllDevices(): Promise<
+    Omit<Device, 'userId' | 'typeId' | 'categoryId' | 'description'>[]
+  > {
     try {
       return await this.prisma.device.findMany({
-        skip,
-        take,
         select: {
           id: true,
           name: true,
           number: true,
-          type: true,
-          category: true,
-          description: true,
+          type: { select: { id: true, name: true } },
+          category: { select: { id: true, name: true } },
           createdAt: true,
           updatedAt: true,
           from: true,

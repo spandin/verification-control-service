@@ -25,6 +25,6 @@ export class GetMeDto {
   })
   createdAt: Date
 
-  @ApiProperty({ example: 'CLIENT', description: 'The role of the user' })
+  @ApiProperty({ example: 'admin', description: 'The role of the user' })
   role: string
 }
