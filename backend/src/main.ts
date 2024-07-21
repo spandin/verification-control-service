@@ -1,3 +1,4 @@
+import { writeFileSync } from 'fs'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
@@ -30,6 +31,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'VCS API',
   })
+
+  writeFileSync('./swagger-spec.json', JSON.stringify(document))
 
   await app.listen(3000)
 }
