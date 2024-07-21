@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma/prisma.module'
 import { AuthModule } from './auth/auth.module'
 import { WakeUpModule } from './wake-up/wake-up.module'
 import { SpecModule } from './spec/spec.module'
+import { DevicesModule } from './devices/devices.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SpecModule } from './spec/spec.module'
     SpecModule,
     WakeUpModule,
     AuthModule,
+    DevicesModule,
   ],
 })
 export class AppModule {}
