@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { DeviceCategory, DeviceType } from '@prisma/client'
-import { IsEnum, IsOptional } from 'class-validator'
+import { IsOptional } from 'class-validator'
 
 export class GetDeviceById {
   @ApiProperty({ example: 'Lorem Ipsum', description: 'The name of the device', type: String })
@@ -14,21 +14,15 @@ export class GetDeviceById {
   number: string
 
   @ApiProperty({
-    example: DeviceType[0],
     description: 'The type of the device',
-    enum: DeviceType,
     type: String,
   })
-  @IsEnum(DeviceType)
   type: DeviceType
 
   @ApiProperty({
-    example: DeviceCategory[0],
     description: 'The type of the device',
-    enum: DeviceCategory,
     type: String,
   })
-  @IsEnum(DeviceCategory)
   category: DeviceCategory
 
   @ApiProperty({

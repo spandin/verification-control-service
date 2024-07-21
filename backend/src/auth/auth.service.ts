@@ -6,12 +6,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
-import { Role, User } from '@prisma/client'
+import { User } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
-import { GetMeDto } from './dto/get-me.dto'
 
 @Injectable()
 export class AuthService {
@@ -21,15 +20,26 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto): Promise<{ token: string }> {
-    const { phone, email, password, name, role } = registerDto
+    const { phone, email, password, name, role: roleName } = registerDto
 
-    if (role === Role.ADMIN) {
+    const role = await this.prisma.role.findUnique({
+      where: { name: roleName },
+    })
+
+    if (role.name === 'администратор') {
       throw new BadRequestException(
         'Invalid request. Cannot register as an administrator or invalid role.',
       )
     }
 
-    if (![Role.USER, Role.ENERGY_ENGINEER, Role.ELECTRICAL_ENGINEER].includes(role)) {
+    const allRoles = await this.prisma.role.findMany({
+      select: {
+        name: true,
+      },
+    })
+
+    const validRoles = allRoles.map((role) => role.name)
+    if (!validRoles.includes(role.name)) {
       throw new BadRequestException('Invalid request. Invalid role.')
     }
 
@@ -46,7 +56,9 @@ export class AuthService {
         email,
         password: hashedPassword,
         name,
-        role,
+        role: {
+          connect: { id: role.id },
+        },
       },
     })
 
@@ -77,8 +89,8 @@ export class AuthService {
     }
   }
 
-  async getMe(userId: number): Promise<GetMeDto> {
-    const user = this.prisma.user.findUnique({
+  async getMe(userId: number): Promise<any> {
+    const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -87,7 +99,11 @@ export class AuthService {
         email: true,
         avatar: true,
         createdAt: true,
-        role: true,
+        role: {
+          select: {
+            name: true,
+          },
+        },
       },
     })
 
