@@ -15,7 +15,7 @@ model User {
   password  String
   avatar    String?
   role      Role     @relation(fields: [roleId], references: [id])
-  roleId    Int
+  roleId    String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   devices   Device[]
@@ -31,7 +31,7 @@ model Device {
   type        DeviceType     @relation(fields: [typeId], references: [id])
   typeId      Int
   category    DeviceCategory @relation(fields: [categoryId], references: [id])
-  categoryId  Int
+  categoryId  String
   description String?
   createdAt   DateTime       @default(now()) @map("created_at")
   updatedAt   DateTime       @updatedAt @map("updated_at")
@@ -53,17 +53,20 @@ model Token {
 }
 
 model DeviceCategory {
-  id   Int    @id @default(autoincrement())
+  id   String @unique
   name String @unique
 
-  devices Device[]
+  devices          Device[]
+  devicesWithTypes DeviceType[]
 
   @@map("devices_category")
 }
 
 model DeviceType {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id         Int            @id @default(autoincrement())
+  name       String         @unique
+  category   DeviceCategory @relation(fields: [categoryId], references: [id])
+  categoryId String
 
   devices Device[]
 
@@ -71,7 +74,7 @@ model DeviceType {
 }
 
 model Role {
-  id   Int    @id @default(autoincrement())
+  id   String @unique
   name String @unique
 
   users User[]
