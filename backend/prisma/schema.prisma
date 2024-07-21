@@ -9,7 +9,7 @@ generator client {
 
 model User {
   id        Int      @id @default(autoincrement())
-  name      String   @default("") @map("first_name")
+  name      String
   phone     String?
   email     String   @unique
   password  String
@@ -17,23 +17,54 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  devices   Device[]
   tokens    Token[]
 
   @@map("users")
+}
+
+model Device {
+  id          Int            @id @default(autoincrement())
+  name        String
+  number      String
+  type        DeviceType
+  category    DeviceCategory
+  description String?
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  from        DateTime
+  to          DateTime
+  user        User           @relation(fields: [userId], references: [id])
+  userId      Int            @map("user_id")
+
+  @@map("devices")
 }
 
 model Token {
   id     String @id @default(uuid())
   token  String @unique
   user   User   @relation(fields: [userId], references: [id])
-  userId Int
+  userId Int    @map("user_id")
 
   @@map("tokens")
 }
 
+enum DeviceCategory {
+  THERMOMETER    @map("Термометр")
+  MANOMETER      @map("Манометр")
+  ELECTRIC_METER @map("Электросчётчик")
+  ELECTRIC_TOOL  @map("Электроинструмент")
+}
+
+enum DeviceType {
+  TYPE1 @map("Тип 1")
+  TYPE2 @map("Тип 2")
+  TYPE3 @map("Тип 3")
+}
+
 enum Role {
-  ADMIN
-  USER
-  ELECTRICAL_ENGINEER
-  ENERGY_ENGINEER
+  ADMIN               @map("Администратор")
+  USER                @map("Пользователь")
+  ELECTRICAL_ENGINEER @map("Инженер-электрик")
+  ENERGY_ENGINEER     @map("Инженер-энергетик")
 }
