@@ -3,8 +3,17 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from './prisma/prisma.module'
 import { AuthModule } from './auth/auth.module'
+import { WakeUpModule } from './wake-up/wake-up.module'
+import { SpecModule } from './spec/spec.module'
 
 @Module({
-  imports: [ScheduleModule.forRoot(), PrismaModule, ConfigModule, AuthModule],
+  imports: [
+    ScheduleModule.forRoot(),
+    PrismaModule,
+    ConfigModule,
+    SpecModule,
+    WakeUpModule,
+    AuthModule,
+  ],
 })
 export class AppModule {}
