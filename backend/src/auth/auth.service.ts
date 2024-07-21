@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
@@ -10,6 +11,7 @@ import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
+import { GetMeDto } from './dto/get-me.dto'
 
 @Injectable()
 export class AuthService {
@@ -73,6 +75,27 @@ export class AuthService {
     if (decoded && decoded.userId) {
       await this.deleteUserToken(decoded.userId, token)
     }
+  }
+
+  async getMe(userId: number): Promise<GetMeDto> {
+    const user = this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        email: true,
+        avatar: true,
+        createdAt: true,
+        role: true,
+      },
+    })
+
+    if (!user) {
+      throw new NotFoundException('User not found.')
+    }
+
+    return user
   }
 
   private async generateAndSaveToken(user: User): Promise<{ token: string }> {

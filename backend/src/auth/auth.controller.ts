@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Post,
@@ -14,6 +15,7 @@ import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import { ApiTags, ApiResponse, ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
 import { Request } from 'express'
+import { GetMeDto } from './dto/get-me.dto'
 
 @ApiTags('auth')
 @Controller('auth')
@@ -107,6 +109,28 @@ export class AuthController {
         statusCode: HttpStatus.OK,
         message: 'Successfully logged out',
       }
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error
+      } else {
+        throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+      }
+    }
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({
+    summary: 'Get current user',
+    description: 'Returns information about the current authenticated user.',
+  })
+  @ApiResponse({ status: 200, description: 'Returns the current user.', type: GetMeDto })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async getCurrentUser(@Req() req) {
+    try {
+      const userId = req.user.id
+      return await this.authService.getMe(userId)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error
