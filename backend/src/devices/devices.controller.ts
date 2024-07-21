@@ -119,7 +119,7 @@ export class DevicesController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Get device by ID.' })
+  @ApiOperation({ summary: 'Get device by ID' })
   @ApiResponse({ status: 200, description: 'The device data.', type: GetDeviceById })
   @ApiResponse({ status: 404, description: 'Device not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -138,7 +138,7 @@ export class DevicesController {
   @Get('')
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Get all devices.' })
+  @ApiOperation({ summary: 'Get all devices' })
   @ApiResponse({
     status: 200,
     description: 'List of devices.',
