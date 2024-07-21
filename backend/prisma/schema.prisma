@@ -14,7 +14,8 @@ model User {
   email     String   @unique
   password  String
   avatar    String?
-  role      Role     @default(USER)
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    Int
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   devices   Device[]
@@ -27,8 +28,10 @@ model Device {
   id          Int            @id @default(autoincrement())
   name        String
   number      String
-  type        DeviceType
-  category    DeviceCategory
+  type        DeviceType     @relation(fields: [typeId], references: [id])
+  typeId      Int
+  category    DeviceCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
   description String?
   createdAt   DateTime       @default(now()) @map("created_at")
   updatedAt   DateTime       @updatedAt @map("updated_at")
@@ -49,22 +52,29 @@ model Token {
   @@map("tokens")
 }
 
-enum DeviceCategory {
-  THERMOMETER    @map("Термометр")
-  MANOMETER      @map("Манометр")
-  ELECTRIC_METER @map("Электросчётчик")
-  ELECTRIC_TOOL  @map("Электроинструмент")
+model DeviceCategory {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  devices Device[]
+
+  @@map("devices_category")
 }
 
-enum DeviceType {
-  TYPE1 @map("Тип 1")
-  TYPE2 @map("Тип 2")
-  TYPE3 @map("Тип 3")
+model DeviceType {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  devices Device[]
+
+  @@map("devices_type")
 }
 
-enum Role {
-  ADMIN               @map("Администратор")
-  USER                @map("Пользователь")
-  ELECTRICAL_ENGINEER @map("Инженер-электрик")
-  ENERGY_ENGINEER     @map("Инженер-энергетик")
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  users User[]
+
+  @@map("roles")
 }
