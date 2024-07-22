@@ -6,16 +6,15 @@ import {
   HttpStatus,
   Post,
   Req,
-  UseGuards,
   ValidationPipe,
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { AuthGuard } from '@nestjs/passport'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
-import { ApiTags, ApiResponse, ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger'
 import { Request } from 'express'
 import { GetMeDto } from './dto/get-me.dto'
+import { Auth } from './auth.decorator'
 
 @ApiTags('auth')
 @Controller('auth')
@@ -23,8 +22,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
+  @Auth()
   @ApiOperation({
     summary: 'Register a new user',
     description: 'Registers a new user with the provided details.',
@@ -85,8 +83,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
+  @Auth()
   @ApiOperation({
     summary: 'Logout user',
     description: 'Invalidates the user session and logs the user out.',
@@ -119,8 +116,7 @@ export class AuthController {
   }
 
   @Get('me')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @Auth()
   @ApiOperation({
     summary: 'Get current user',
     description: 'Returns information about the current authenticated user.',
