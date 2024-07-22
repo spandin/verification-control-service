@@ -3,3 +3,8 @@ export interface RequsterTypes {
   email: string
   role: string
 }
+
+export interface RoleTypes {
+  id: string
+  name: string
+}
