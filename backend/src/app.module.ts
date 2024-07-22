@@ -7,6 +7,7 @@ import { WakeUpModule } from './wake-up/wake-up.module'
 import { SpecModule } from './spec/spec.module'
 import { DevicesModule } from './devices/devices.module'
 import { RoleModule } from './role/role.module'
+import { UsersModule } from './users/users.module'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RoleModule } from './role/role.module'
     AuthModule,
     DevicesModule,
     RoleModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
