@@ -1,4 +1,4 @@
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger'
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger'
 import {
   Body,
   Controller,
@@ -10,13 +10,12 @@ import {
   Post,
   Put,
   Req,
-  UseGuards,
 } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
 import { DevicesService } from './devices.service'
 import { CreateDeviceDto } from './dto/create.dto'
 import { UpdateDeviceDto } from './dto/update.dto'
 import { GetDeviceById } from './dto/get-by-id.dto'
+import { Auth } from 'src/auth/auth.decorator'
 
 @ApiTags('devices')
 @Controller('devices')
@@ -24,8 +23,7 @@ export class DevicesController {
   constructor(private readonly deviceService: DevicesService) {}
 
   @Post('')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @Auth()
   @ApiOperation({ summary: 'Create a new device' })
   @ApiResponse({
     status: 201,
@@ -49,8 +47,7 @@ export class DevicesController {
   }
 
   @Put('/:id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @Auth()
   @ApiOperation({ summary: 'Update a device' })
   @ApiParam({
     name: 'id',
@@ -85,8 +82,7 @@ export class DevicesController {
   }
 
   @Delete('/:id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @Auth()
   @ApiOperation({ summary: 'Delete a device' })
   @ApiParam({
     name: 'id',
@@ -117,8 +113,7 @@ export class DevicesController {
   }
 
   @Get(':id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @Auth()
   @ApiOperation({ summary: 'Get device by ID' })
   @ApiResponse({ status: 200, description: 'The device data.', type: GetDeviceById })
   @ApiResponse({ status: 404, description: 'Device not found.' })
@@ -136,8 +131,7 @@ export class DevicesController {
   }
 
   @Get('')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @Auth()
   @ApiOperation({ summary: 'Get all devices' })
   @ApiResponse({
     status: 200,

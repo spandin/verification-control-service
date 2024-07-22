@@ -3,8 +3,7 @@ import { IsOptional, MaxLength, MinLength } from 'class-validator'
 
 export class UpdateDeviceDto {
   @ApiProperty({ example: 'Lorem Ipsum', description: 'The name of the device', type: String })
-  @MinLength(6)
-  @MaxLength(32)
+  @IsOptional()
   name?: string
 
   @ApiProperty({
@@ -12,20 +11,22 @@ export class UpdateDeviceDto {
     description: 'The identification number of the device',
     type: String,
   })
-  @MinLength(5)
-  @MaxLength(24)
+  @IsOptional()
   number?: string
 
   @ApiProperty({
+    example: 'type | marks',
     description: 'The type of the device',
     type: String,
   })
+  @IsOptional()
   type?: string
 
   @ApiProperty({
-    description: 'The type of the device',
+    description: 'The category of the device',
     type: String,
   })
+  @IsOptional()
   category?: string
 
   @ApiProperty({
@@ -41,6 +42,7 @@ export class UpdateDeviceDto {
     description: 'The date and time when the publication was verified',
     type: Date,
   })
+  @IsOptional()
   from?: Date
 
   @ApiProperty({
@@ -48,5 +50,6 @@ export class UpdateDeviceDto {
     description: 'The date and time when the device will not be verified',
     type: Date,
   })
+  @IsOptional()
   to?: Date
 }

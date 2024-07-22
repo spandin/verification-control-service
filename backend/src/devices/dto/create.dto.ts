@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator'
+import { IsLowercase, IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator'
 
 export class CreateDeviceDto {
   @ApiProperty({ example: 'Lorem Ipsum', description: 'The name of the device', type: String })
@@ -9,7 +9,7 @@ export class CreateDeviceDto {
   name: string
 
   @ApiProperty({
-    example: '00000000',
+    example: '12345',
     description: 'The identification number of the device',
     type: String,
   })
@@ -19,17 +19,25 @@ export class CreateDeviceDto {
   number: string
 
   @ApiProperty({
+    example: 'type | marks',
     description: 'The type of the device',
     type: String,
   })
+  @IsLowercase()
   @IsNotEmpty()
+  @MinLength(2)
+  @MaxLength(24)
   type: string
 
   @ApiProperty({
-    description: 'The type of the device',
+    example: 'category',
+    description: 'The category of the device',
     type: String,
   })
+  @IsLowercase()
   @IsNotEmpty()
+  @MinLength(2)
+  @MaxLength(24)
   category: string
 
   @ApiProperty({
