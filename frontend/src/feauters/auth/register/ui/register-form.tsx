@@ -10,18 +10,18 @@ import PhoneInput from "./compose/phone-input"
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .required("Имя обязательно для заполнения.")
-    .min(2, "Имя должно быть больше двух букв."),
-  phone: Yup.string().nullable().min(5, "Имя должно быть больше двух букв."),
+    .required("Имя обязательно для заполнения")
+    .min(2, "Имя должно быть больше двух букв"),
+  phone: Yup.string().nullable().min(5, "Имя должно быть больше двух букв"),
   email: Yup.string()
-    .email("Введите корректный email адрес.")
-    .required("Email обязятелен для заполнения.")
-    .min(5, "Минимальная длинна email - 5 символов.")
-    .max(32, "Максимальная длинна пароля - 32 символа."),
+    .email("Введите корректный email адрес")
+    .required("Email обязятелен для заполнения")
+    .min(5, "Минимальная длинна email - 5 символов")
+    .max(32, "Максимальная длинна пароля - 32 символа"),
   password: Yup.string()
-    .required("Пароль обязятелен для заполнения.")
-    .min(6, "Минимальная длинна пароля - 6 символов.")
-    .max(32, "Максимальная длинна пароля - 32 символа."),
+    .required("Пароль обязятелен для заполнения")
+    .min(6, "Минимальная длинна пароля - 6 символов")
+    .max(32, "Максимальная длинна пароля - 32 символа"),
   role: Yup.string().required("Выберите роль"),
 })
 
@@ -104,7 +104,7 @@ export const RegisterForm = () => {
             </Select>
           </div>
 
-          <span className="text-md px-1 font-medium text-danger">
+          <span className="px-1 text-base font-normal text-danger">
             {errors.name || errors.phone || errors.email || errors.password || errors.role}
           </span>
 
