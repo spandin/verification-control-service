@@ -25,6 +25,9 @@ export class AuthService {
     const role = await this.prisma.role.findUnique({
       where: { name: roleName },
     })
+    if (!role) {
+      throw new BadRequestException('Invalid role. Must be a valid role.')
+    }
 
     if (role.name === 'администратор') {
       throw new BadRequestException(
