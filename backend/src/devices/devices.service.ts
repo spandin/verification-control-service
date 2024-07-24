@@ -19,14 +19,23 @@ export class DevicesService {
   async createDevice(
     createDeviceDto: CreateDeviceDto,
     requester: RequsterTypes,
-  ): Promise<Omit<Device, 'userId' | 'updatedAt' | 'typeId' | 'categoryId'>> {
-    const { name, number, type, category, description, from, to } = createDeviceDto
+  ): Promise<Omit<Device, 'userId' | 'updatedAt' | 'typeId' | 'categoryId' | 'organizationId'>> {
+    const { name, number, type, category, organization, description, from, to } = createDeviceDto
 
     if (!name || name.length < 6 || name.length > 32) {
       throw new BadRequestException('Invalid name. Must be between 6 and 32 characters.')
     }
     if (!number || number.length < 5 || number.length > 24) {
       throw new BadRequestException('Invalid number. Must be between 5 and 24 characters.')
+    }
+
+    const existingDevice = await this.prisma.device.findFirst({
+      where: {
+        AND: [{ name }, { number }],
+      },
+    })
+    if (existingDevice) {
+      throw new BadRequestException('A device with the same name and number already exists.')
     }
 
     const deviceType = await this.prisma.deviceType.findUnique({ where: { name: type } })
@@ -39,6 +48,13 @@ export class DevicesService {
     })
     if (!deviceCategory) {
       throw new BadRequestException('Invalid category. Must be a valid DeviceCategory.')
+    }
+
+    const deviceOrganization = await this.prisma.organization.findFirst({
+      where: { name: organization },
+    })
+    if (!deviceOrganization) {
+      throw new BadRequestException('Invalid organization. Must be a valid organization.')
     }
 
     if (!from || isNaN(new Date(from).getTime())) {
@@ -62,6 +78,9 @@ export class DevicesService {
           category: {
             connect: { id: deviceCategory.id },
           },
+          organization: {
+            connect: { id: deviceOrganization.id },
+          },
           user: {
             connect: { id: requester.id },
           },
@@ -72,6 +91,7 @@ export class DevicesService {
           number: true,
           type: { select: { id: true, name: true } },
           category: { select: { id: true, name: true } },
+          organization: { select: { id: true, name: true } },
           description: true,
           createdAt: true,
           from: true,
@@ -90,7 +110,7 @@ export class DevicesService {
     id: number,
     updateDeviceDto: UpdateDeviceDto,
     requester: RequsterTypes,
-  ): Promise<Omit<Device, 'userId' | 'createdAt' | 'typeId' | 'categoryId'>> {
+  ): Promise<Omit<Device, 'userId' | 'createdAt' | 'typeId' | 'categoryId' | 'organizationId'>> {
     const device = await this.prisma.device.findUnique({
       where: { id },
       include: { user: true },
@@ -145,6 +165,7 @@ export class DevicesService {
           number: true,
           type: { select: { id: true, name: true } },
           category: { select: { id: true, name: true } },
+          organization: { select: { id: true, name: true } },
           description: true,
           updatedAt: true,
           from: true,
@@ -185,7 +206,9 @@ export class DevicesService {
   }
 
   // Get by id device service
-  async getDeviceById(id: number): Promise<Omit<Device, 'userId' | 'typeId' | 'categoryId'>> {
+  async getDeviceById(
+    id: number,
+  ): Promise<Omit<Device, 'userId' | 'typeId' | 'categoryId' | 'organizationId'>> {
     const device = await this.prisma.device.findUnique({
       where: { id },
       select: {
@@ -194,6 +217,7 @@ export class DevicesService {
         number: true,
         type: { select: { id: true, name: true } },
         category: { select: { id: true, name: true } },
+        organization: { select: { id: true, name: true } },
         description: true,
         createdAt: true,
         updatedAt: true,
@@ -212,7 +236,7 @@ export class DevicesService {
 
   // Get all devices service
   async getAllDevices(): Promise<
-    Omit<Device, 'userId' | 'typeId' | 'categoryId' | 'description'>[]
+    Omit<Device, 'userId' | 'typeId' | 'categoryId' | 'description' | 'organizationId'>[]
   > {
     try {
       return await this.prisma.device.findMany({
@@ -222,6 +246,7 @@ export class DevicesService {
           number: true,
           type: { select: { id: true, name: true } },
           category: { select: { id: true, name: true } },
+          organization: { select: { id: true, name: true } },
           createdAt: true,
           updatedAt: true,
           from: true,

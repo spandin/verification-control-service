@@ -41,6 +41,17 @@ export class CreateDeviceDto {
   category: string
 
   @ApiProperty({
+    example: 'organization name',
+    description: 'The organization of the device',
+    type: String,
+  })
+  @IsLowercase()
+  @IsNotEmpty()
+  @MinLength(2)
+  @MaxLength(24)
+  organization: string
+
+  @ApiProperty({
     example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     description: 'The description of the device',
     type: String,

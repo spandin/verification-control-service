@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional, MaxLength, MinLength } from 'class-validator'
+import { IsOptional } from 'class-validator'
 
 export class UpdateDeviceDto {
   @ApiProperty({ example: 'Lorem Ipsum', description: 'The name of the device', type: String })
@@ -28,6 +28,14 @@ export class UpdateDeviceDto {
   })
   @IsOptional()
   category?: string
+
+  @ApiProperty({
+    example: 'organization name',
+    description: 'The organization of the device',
+    type: String,
+  })
+  @IsOptional()
+  organization: string
 
   @ApiProperty({
     example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
