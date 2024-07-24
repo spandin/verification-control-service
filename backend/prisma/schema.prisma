@@ -46,7 +46,7 @@ model Device {
 }
 
 model DeviceCategory {
-  id   String @unique
+  id   String @id @unique
   name String @unique
 
   devices          Device[]
@@ -73,8 +73,7 @@ model Organization {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   contacts OrganizationContact[]
-
-  devices Device[]
+  devices  Device[]
 
   @@map("organizations")
 }
@@ -100,7 +99,7 @@ model Token {
 }
 
 model Role {
-  id   String @unique
+  id   String @id @unique
   name String @unique
 
   users User[]
