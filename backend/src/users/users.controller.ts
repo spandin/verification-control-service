@@ -22,13 +22,13 @@ export class UsersController {
   @Post('create-user')
   @Auth()
   @ApiOperation({
-    summary: 'Register a new user',
-    description: 'Registers a new user with the provided details.',
+    summary: 'Create a new user',
+    description: 'Create a new user with the provided details.',
   })
   @ApiResponse({ status: 201, description: 'User registered successfully.' })
   @ApiResponse({
     status: 400,
-    description: 'Invalid request. Cannot register as an administrator or invalid role.',
+    description: 'Invalid request. Cannot created as an administrator or invalid role.',
   })
   @ApiResponse({ status: 409, description: 'User already exists.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -39,7 +39,7 @@ export class UsersController {
       const result = await this.usersService.createUser(createUserDto)
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'User registered successfully.',
+        message: 'User created successfully.',
         token: result.token,
       }
     } catch (error) {

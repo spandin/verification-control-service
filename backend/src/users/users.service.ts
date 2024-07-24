@@ -30,7 +30,7 @@ export class UsersService {
 
     if (role.name === 'администратор') {
       throw new BadRequestException(
-        'Invalid request. Cannot register as an administrator or invalid role.',
+        'Invalid request. Cannot created as an administrator or invalid role.',
       )
     }
 
