@@ -25,31 +25,24 @@ model User {
 }
 
 model Device {
-  id          Int            @id @default(autoincrement())
-  name        String
-  number      String
-  type        DeviceType     @relation(fields: [typeId], references: [id])
-  typeId      Int
-  category    DeviceCategory @relation(fields: [categoryId], references: [id])
-  categoryId  String
-  description String?
-  createdAt   DateTime       @default(now()) @map("created_at")
-  updatedAt   DateTime       @updatedAt @map("updated_at")
-  from        DateTime
-  to          DateTime
-  user        User           @relation(fields: [userId], references: [id])
-  userId      Int            @map("user_id")
+  id             Int            @id @default(autoincrement())
+  name           String
+  number         String
+  type           DeviceType     @relation(fields: [typeId], references: [id])
+  typeId         Int
+  category       DeviceCategory @relation(fields: [categoryId], references: [id])
+  categoryId     String
+  description    String?
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  from           DateTime
+  to             DateTime
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int            @map("user_id")
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  organizationId Int            @map("organization_id")
 
   @@map("devices")
-}
-
-model Token {
-  id     String @id @default(uuid())
-  token  String @unique
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int    @map("user_id")
-
-  @@map("tokens")
 }
 
 model DeviceCategory {
@@ -71,6 +64,39 @@ model DeviceType {
   devices Device[]
 
   @@map("devices_type")
+}
+
+model Organization {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  contacts OrganizationContact[]
+
+  devices Device[]
+
+  @@map("organizations")
+}
+
+model OrganizationContact {
+  id             Int          @id @default(autoincrement())
+  name           String
+  position       String
+  phoneNumber    String       @map("phone_number")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+
+  @@map("organization_contacts")
+}
+
+model Token {
+  id     String @id @default(uuid())
+  token  String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @map("user_id")
+
+  @@map("tokens")
 }
 
 model Role {
