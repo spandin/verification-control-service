@@ -1,15 +1,8 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { User } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
-import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 
 @Injectable()
@@ -18,55 +11,6 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
   ) {}
-
-  async register(registerDto: RegisterDto): Promise<{ token: string }> {
-    const { phone, email, password, name, role: roleName } = registerDto
-
-    const role = await this.prisma.role.findUnique({
-      where: { name: roleName },
-    })
-    if (!role) {
-      throw new BadRequestException('Invalid role. Must be a valid role.')
-    }
-
-    if (role.name === 'администратор') {
-      throw new BadRequestException(
-        'Invalid request. Cannot register as an administrator or invalid role.',
-      )
-    }
-
-    const allRoles = await this.prisma.role.findMany({
-      select: {
-        name: true,
-      },
-    })
-
-    const validRoles = allRoles.map((role) => role.name)
-    if (!validRoles.includes(role.name)) {
-      throw new BadRequestException('Invalid request. Invalid role.')
-    }
-
-    const existingUser = await this.prisma.user.findUnique({ where: { email } })
-    if (existingUser) {
-      throw new ConflictException('User already exists.')
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-    const user = await this.prisma.user.create({
-      data: {
-        phone,
-        email,
-        password: hashedPassword,
-        name,
-        role: {
-          connect: { id: role.id },
-        },
-      },
-    })
-
-    return this.generateAndSaveToken(user)
-  }
 
   async login(loginDto: LoginDto): Promise<{ token: string }> {
     const { email, password } = loginDto
@@ -117,7 +61,7 @@ export class AuthService {
     return user
   }
 
-  private async generateAndSaveToken(user: User): Promise<{ token: string }> {
+  async generateAndSaveToken(user: User): Promise<{ token: string }> {
     const payload = { userId: user.id, email: user.email }
     const token = this.jwtService.sign(payload)
 

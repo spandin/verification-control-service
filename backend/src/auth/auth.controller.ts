@@ -1,15 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Post,
-  Req,
-  ValidationPipe,
-} from '@nestjs/common'
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger'
 import { Request } from 'express'
@@ -20,38 +10,6 @@ import { Auth } from './auth.decorator'
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-
-  @Post('register')
-  @Auth()
-  @ApiOperation({
-    summary: 'Register a new user',
-    description: 'Registers a new user with the provided details.',
-  })
-  @ApiResponse({ status: 201, description: 'User registered successfully.' })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid request. Cannot register as an administrator or invalid role.',
-  })
-  @ApiResponse({ status: 409, description: 'User already exists.' })
-  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async register(
-    @Body(ValidationPipe) registerDto: RegisterDto,
-  ): Promise<{ statusCode: number; message: string; token: string }> {
-    try {
-      const result = await this.authService.register(registerDto)
-      return {
-        statusCode: HttpStatus.CREATED,
-        message: 'User registered successfully.',
-        token: result.token,
-      }
-    } catch (error) {
-      if (error instanceof HttpException) {
-        throw error
-      } else {
-        throw new HttpException('Internal Server Error.', HttpStatus.INTERNAL_SERVER_ERROR)
-      }
-    }
-  }
 
   @Post('login')
   @ApiOperation({
