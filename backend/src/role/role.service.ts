@@ -33,7 +33,7 @@ export class RoleService {
   // Delete role service
   async createRole(createRoleDto: CreateRoleDto, requester: RequsterTypes): Promise<CreateRoleDto> {
     if (requester.role !== 'администратор') {
-      throw new ForbiddenException('Access denied. Only the admin can delete it.')
+      throw new ForbiddenException('Access denied. Only the admin can create it.')
     }
 
     if (!createRoleDto.id) {
@@ -64,7 +64,7 @@ export class RoleService {
     requester: RequsterTypes,
   ): Promise<UpdateRoleDto> {
     if (requester.role !== 'администратор') {
-      throw new ForbiddenException('Access denied. Only the admin can delete it.')
+      throw new ForbiddenException('Access denied. Only the admin can update it.')
     }
 
     const role = await this.prisma.role.findUnique({ where: { id } })
