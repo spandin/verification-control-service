@@ -8,6 +8,8 @@ import { RoleModule } from './role/role.module'
 import { UsersModule } from './users/users.module'
 import { WakeUpModule } from './helpers/wake-up/wake-up.module'
 import { SpecModule } from './helpers/spec/spec.module'
+import { DevicesCategoryModule } from './device-category/device-category.module'
+import { DeviceTypeModule } from './device-type/device-type.module'
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { SpecModule } from './helpers/spec/spec.module'
     AuthModule,
     DevicesModule,
     RoleModule,
+    DevicesCategoryModule,
+    DeviceTypeModule,
     UsersModule,
   ],
 })
