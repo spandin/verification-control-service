@@ -57,7 +57,8 @@ export class DeviceCategoryController {
     }
   }
 
-  @Get(':id/devices-by-category')
+  @Get('get-by-category/:id')
+  @Auth()
   @ApiOperation({ summary: 'Get all devices by category ID' })
   @ApiResponse({
     status: 200,
