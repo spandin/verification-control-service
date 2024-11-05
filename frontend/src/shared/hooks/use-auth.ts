@@ -5,8 +5,7 @@ import { Role } from "../types"
 import { useAuthStore } from "../store/auth-store"
 
 export const useAuth = () => {
-  const { handleError, handleWarning, handlePromise, handleSuccess } =
-    useToasts()
+  const { handleError, handleWarning, handlePromise, handleSuccess } = useToasts()
   const { isAuth, isLoading, setIsAuth, setLoading, setToken } = useAuthStore(
     useShallow((state) => ({
       isAuth: state.isAuth,
@@ -62,7 +61,7 @@ export const useAuth = () => {
     role: Role,
   ) => {
     handlePromise(
-      axiosInstance.post("/auth/register", {
+      axiosInstance.post("/users/create-user", {
         phone,
         name,
         email,
