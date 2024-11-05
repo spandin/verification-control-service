@@ -1,9 +1,8 @@
 export type SiteConfig = typeof SITE_CONFIG
 
 export const SITE_CONFIG = {
-  name: "VCS",
-  description: "Verification Control Service",
-  BASE_URL: "https://vcs-backend-ex7x.onrender.com/",
+  name: `Дейтахаб`,
+  description: `Дейтахаб ГУ "ЦОДБО"`,
   navItems: [
     {
       label: "Home",
