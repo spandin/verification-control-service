@@ -20,7 +20,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('create-user')
-  @Auth()
   @ApiOperation({
     summary: 'Create a new user',
     description: 'Create a new user with the provided details.',
