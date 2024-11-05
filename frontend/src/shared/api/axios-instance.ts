@@ -1,9 +1,8 @@
 import axios from "axios"
-import { SITE_CONFIG } from "../config/site"
 import { useAuthStore } from "../store/auth-store"
 
 const axiosInstance = axios.create({
-  baseURL: SITE_CONFIG.BASE_URL,
+  baseURL: import.meta.env.VITE_BACKEND_URL,
 })
 
 axiosInstance.interceptors.request.use(
