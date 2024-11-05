@@ -4,7 +4,7 @@ import { useAuth } from "@/shared/hooks/use-auth"
 import PasswordInput from "@/shared/ui/password-input"
 import { SITE_CONFIG } from "@/shared/config/site"
 import HelpButton from "./compose/help-button"
-import { Button, Input } from "@nextui-org/react"
+import { Button, Input, Spacer } from "@nextui-org/react"
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -30,24 +30,19 @@ export const LoginForm = () => {
       validationSchema={validationSchema}
       onSubmit={(values, { resetForm }) => {
         login(values.email, values.password)
-
         resetForm()
       }}
     >
       {({ errors, values, handleChange, handleBlur, handleSubmit }) => (
         <form className="flex w-full max-w-sm flex-col gap-2" onSubmit={handleSubmit} noValidate>
-          <div className="mb-4 flex flex-col items-start justify-start px-1">
-            <div className="flex flex-row items-center justify-start gap-2">
-              <img className="max-w-6" src="/favicon.svg" />
-              <h1 className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
-                {SITE_CONFIG.description}
-              </h1>
-            </div>
-
-            <h3 className="text-md font-semibold text-default-700">
-              система контроля поверки ГУ "ЦОДБО"
+          <div className="flex flex-row items-center justify-start gap-2">
+            <img className="max-w-6" src="/favicon.svg" />
+            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+              {SITE_CONFIG.description}
             </h3>
           </div>
+
+          <Spacer />
 
           <div className="flex flex-col gap-2">
             <Input

@@ -10,9 +10,9 @@ export const RootLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="bg-backgroud flex h-screen flex-col-reverse text-foreground md:flex-row">
+    <div className="container m-0 mx-auto flex max-h-screen max-w-4xl flex-col-reverse gap-4 text-foreground md:flex-col">
       <Navbar />
-      <main className="container max-w-4xl flex-grow border-r-slate-200 p-6 md:border-r-2">
+      <main className="scroll-container flex-grow overflow-hidden overflow-y-auto rounded-t-3xl bg-white p-6">
         {children}
       </main>
     </div>
