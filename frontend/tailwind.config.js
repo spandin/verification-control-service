@@ -36,7 +36,7 @@ module.exports = {
             foreground: "black",
             primary: {
               DEFAULT: "#006fee",
-              foreground: "white",
+              foreground: "#f8f8f8",
             },
             focus: "#006fee",
             divider: "black",
